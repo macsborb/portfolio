@@ -1,0 +1,6 @@
+.hero-title {
+  font-size: 64px;       /* équivalent Tailwind text-6xl */
+  font-weight: 800;      /* équivalent font-extrabold */
+  letter-spacing: 2px;   /* équivalent tracking-wide */
+  margin-bottom: 10px;
+}
