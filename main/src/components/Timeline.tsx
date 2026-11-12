@@ -1,12 +1,16 @@
-import { useLanguage } from '../context/LanguageContext';
+import Reveal from './Reveal';
+import SpotlightCard from './SpotlightCard';
+import TechChip from './TechChip';
 
-interface TimelineItem {
+export interface TimelineItem {
   title: string;
-  school: string;
+  subtitle: string;
   period: string;
   location: string;
   description: string;
-  grade: string;
+  grade?: string;
+  tags?: string[];
+  logo?: string;
 }
 
 interface TimelineProps {
@@ -15,38 +19,43 @@ interface TimelineProps {
 
 export default function Timeline({ items }: TimelineProps) {
   return (
-    <div className="relative">
-      {/* Ligne verticale */}
-      <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-cyan-400 via-blue-500 to-purple-600"></div>
-
+    <ol className="relative">
+      <div className="timeline-line absolute left-[11px] sm:left-[15px] top-2 bottom-2 w-px" aria-hidden="true" />
       {items.map((item, index) => (
-        <div key={index} className="relative pl-20 pb-12 last:pb-0">
-          {/* Point sur la timeline */}
-          <div className="absolute left-6 top-2 w-5 h-5 rounded-full bg-cyan-400 border-4 border-gray-900 shadow-lg shadow-cyan-400/50"></div>
-
-          {/* Contenu */}
-          <div className="bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-xl p-6 border border-gray-700 hover:border-cyan-400 transition-all duration-300">
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
-              <div>
-                <h3 className="text-xl sm:text-2xl font-semibold text-white mb-1">
-                  {item.title}
-                </h3>
-                <p className="text-cyan-400 font-medium">{item.school}</p>
+        <li key={item.title} className="relative pl-10 sm:pl-14 pb-8 last:pb-0">
+          <span className="timeline-dot absolute left-[4px] sm:left-[8px] top-7" aria-hidden="true" />
+          <Reveal delay={index * 90}>
+            <SpotlightCard className="p-6 sm:p-7">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-4">
+                <div className="flex items-start gap-4">
+                  {item.logo && (
+                    <span className="logo-plate h-14 w-20 sm:w-24 shrink-0">
+                      <img src={item.logo} alt={item.subtitle} loading="lazy" className="max-h-full max-w-full object-contain" />
+                    </span>
+                  )}
+                  <div>
+                    <h3 className="font-display text-xl sm:text-2xl font-semibold text-white">{item.title}</h3>
+                    <p className="text-cyan-400 font-medium mt-0.5">{item.subtitle}</p>
+                  </div>
+                </div>
+                <div className="text-sm text-gray-400 sm:text-right shrink-0">
+                  <p className="font-mono text-gray-300">{item.period}</p>
+                  <p>{item.location}</p>
+                </div>
               </div>
-              <div className="text-gray-400 text-sm mt-2 sm:mt-0 sm:text-right">
-                <p className="font-medium">{item.period}</p>
-                <p>{item.location}</p>
-              </div>
-            </div>
-            <p className="text-gray-300 mb-2 leading-relaxed">
-              {item.description}
-            </p>
-            <span className="inline-block px-3 py-1 bg-purple-500 bg-opacity-20 text-purple-400 rounded-full text-sm border border-purple-500 border-opacity-30">
-              {item.grade}
-            </span>
-          </div>
-        </div>
+              <p className="text-gray-300 leading-relaxed">{item.description}</p>
+              {(item.grade || item.tags) && (
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {item.grade && <span className="chip chip-violet">{item.grade}</span>}
+                  {item.tags?.map((tag) => (
+                    <TechChip key={tag} name={tag} size="sm" />
+                  ))}
+                </div>
+              )}
+            </SpotlightCard>
+          </Reveal>
+        </li>
       ))}
-    </div>
+    </ol>
   );
 }
